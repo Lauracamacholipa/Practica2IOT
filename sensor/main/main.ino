@@ -3,7 +3,7 @@
 #include "TcpSensorClient.h"
 
 static const uint8_t TRIG_PIN = 26;
-static const uint8_t ECHO_PIN = 27;
+static const uint8_t ECHO_PIN = 25;
 
 UltrasonicSensor sensor(TRIG_PIN, ECHO_PIN);
 TcpSensorClient  client;
