@@ -2,8 +2,9 @@
 #include "LedController.h"
 #include "TcpActuatorClient.h"
 
-static const uint8_t RED_LED_PIN    = 25;
-static const uint8_t GREEN_LED_PIN  = 26;
+static const uint8_t RED_LED_PIN    = 5;
+static const uint8_t YELLOW_LED_PIN = 17; 
+static const uint8_t GREEN_LED_PIN  = 16;
 static const uint8_t STATUS_LED_PIN = 27;
 
 LedController    leds(RED_LED_PIN, GREEN_LED_PIN, STATUS_LED_PIN);

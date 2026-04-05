@@ -19,7 +19,18 @@ public:
 
     bool connectToServer() {
         Serial.printf("[TCP] Connecting to %s:%d\n", SERVER_IP, SERVER_PORT);
-        return _client.connect(SERVER_IP, SERVER_PORT);
+        bool connected = _client.connect(SERVER_IP, SERVER_PORT);
+        if (connected) {
+            _sequenceNumber = 0;    // resetea el contador al reconectar
+            _receiveBuffer  = "";   // limpia el buffer
+        }
+        return connected;
+    }
+
+    void disconnect() {
+        _client.stop();
+        _sequenceNumber = 0;
+        _receiveBuffer = "";
     }
 
     bool isWifiConnected()  { return WiFi.status() == WL_CONNECTED; }

@@ -5,7 +5,9 @@ from collections import deque
 # ── Configuración ──────────────────────────────────
 HOST = ''
 PORT = 5000
-UMBRAL_CERCA = 20       # cm
+THRESHOLD_NEAR_CM =  30.0
+THRESHOLD_MEDIUM_CM = 100.0
+THRESHOLD_FAR_CM = 150.0
 MAX_SEQ_CACHE = 500     # límite para evitar crecimiento indefinido
 
 lock = threading.Lock()          # protege actuador_conn y seen_seq
@@ -14,7 +16,14 @@ actuador_conn = None
 
 # ── Algoritmo de control ───────────────────────────
 def algoritmo_control(distancia: float) -> str:
-    return "CMD:ROJO\n" if distancia < UMBRAL_CERCA else "CMD:VERDE\n"
+    if distancia < THRESHOLD_NEAR_CM:
+        return "CMD:RED\n"
+    elif distancia < THRESHOLD_MEDIUM_CM:
+        return "CMD:YELLOW\n"
+    elif distancia < THRESHOLD_FAR_CM:
+        return "CMD:GREEN\n"
+    else:
+        return "CMD:GREEN\n" 
 
 # ── Procesamiento de cada mensaje recibido ─────────
 def procesar_mensaje(msg: str, conn: socket.socket) -> None:
@@ -77,6 +86,8 @@ def procesar_mensaje(msg: str, conn: socket.socket) -> None:
 def manejar_cliente(conn: socket.socket, addr) -> None:
     print(f"[INFO] Conectado: {addr}")
     buffer = ""
+    with lock:
+        seen_seq.clear() 
     try:
         with conn:
             while True:

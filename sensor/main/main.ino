@@ -2,8 +2,8 @@
 #include "UltrasonicSensor.h"
 #include "TcpSensorClient.h"
 
-static const uint8_t TRIG_PIN = 5;
-static const uint8_t ECHO_PIN = 18;
+static const uint8_t TRIG_PIN = 26;
+static const uint8_t ECHO_PIN = 27;
 
 UltrasonicSensor sensor(TRIG_PIN, ECHO_PIN);
 TcpSensorClient  client;
@@ -25,8 +25,11 @@ void loop() {
 
     if (!client.isServerConnected()) {
         Serial.println("[TCP] Reconnecting to server...");
+        client.disconnect();    
         delay(RECONNECT_DELAY_MS);
-        client.connectToServer();
+        if (!client.connectToServer()) {
+            Serial.println("[TCP] Reconnection failed, retrying...");
+        }
         return;
     }
 
@@ -44,14 +47,3 @@ void loop() {
 
     delay(SEND_INTERVAL_MS);
 }
-```
-
----
-
-## Actuator — File structure
-```
-actuator/
-├── main.ino
-├── NetworkConfig.h
-├── LedController.h
-└── TcpActuatorClient.h
