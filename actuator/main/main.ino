@@ -7,7 +7,7 @@ static const uint8_t YELLOW_LED_PIN = 17;
 static const uint8_t GREEN_LED_PIN  = 16;
 static const uint8_t STATUS_LED_PIN = 27;
 
-LedController    leds(RED_LED_PIN, GREEN_LED_PIN, STATUS_LED_PIN);
+LedController    leds(RED_LED_PIN, YELLOW_LED_PIN, GREEN_LED_PIN, STATUS_LED_PIN);
 TcpActuatorClient client;
 
 void setup() {

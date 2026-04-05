@@ -28,6 +28,7 @@ public:
         if      (command == "CMD:RED")    _activateRed();
         else if (command == "CMD:YELLOW") _activateYellow();
         else if (command == "CMD:GREEN")  _activateGreen();
+        else if (command == "CMD:OFF")  _turnAllOff();
         else Serial.println("[LED] Unknown command: " + command);
     }
 

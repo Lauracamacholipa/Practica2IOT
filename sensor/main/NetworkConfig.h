@@ -1,8 +1,8 @@
 #pragma once
 
-static const char* WIFI_SSID       = "COWORK";
-static const char* WIFI_PASSWORD   = "Cowork2024";
-static const char* SERVER_IP       = "192.168.30.145";
+static const char* WIFI_SSID       = "COMTECO-N5048512-5G";
+static const char* WIFI_PASSWORD   = "R5G1Z8M2M6B8";
+static const char* SERVER_IP       = "192.168.56.1";
 static const int   SERVER_PORT     = 5000;
 
 static const int   SEND_INTERVAL_MS    = 500;

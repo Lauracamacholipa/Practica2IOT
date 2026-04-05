@@ -23,7 +23,7 @@ def algoritmo_control(distancia: float) -> str:
     elif distancia < THRESHOLD_FAR_CM:
         return "CMD:GREEN\n"
     else:
-        return "CMD:GREEN\n" 
+        return "CMD:OFF\n" 
 
 # ── Procesamiento de cada mensaje recibido ─────────
 def procesar_mensaje(msg: str, conn: socket.socket) -> None:
@@ -40,7 +40,7 @@ def procesar_mensaje(msg: str, conn: socket.socket) -> None:
         return
 
     # Registro del actuador
-    if partes.get("TIPO") == "ACTUADOR":
+    if partes.get("TYPE") == "ACTUATOR":
         with lock:
             actuador_conn = conn
         conn.sendall("ACK:REGISTRO\n".encode())   # confirmación al actuador
