@@ -84,12 +84,32 @@ def procesar_mensaje(msg: str, conn: socket.socket) -> None:
 
 # ── Hilo por cliente ───────────────────────────────
 def manejar_cliente(conn: socket.socket, addr) -> None:
+    global actuador_conn
     print(f"[INFO] Conectado: {addr}")
     buffer = ""
-    with lock:
-        seen_seq.clear() 
+
     try:
         with conn:
+            # Lee primer mensaje para identificar si es sensor o actuador
+            datos = conn.recv(1024).decode("utf-8", errors="replace")
+            if not datos:
+                return
+
+            buffer += datos
+            primera_linea = ""
+            if "\n" in buffer:
+                primera_linea, buffer = buffer.split("\n", 1)
+
+            # Solo limpia seen_seq si es el sensor reconectando
+            if "TYPE:SENSOR" in primera_linea or "SEQ" in primera_linea:
+                with lock:
+                    seen_seq.clear()
+                print("[INFO] Sensor reconectado - seen_seq limpiado")
+
+            if primera_linea.strip():
+                procesar_mensaje(primera_linea, conn)
+
+            # Continúa con el resto de mensajes normalmente
             while True:
                 datos = conn.recv(1024).decode("utf-8", errors="replace")
                 if not datos:
