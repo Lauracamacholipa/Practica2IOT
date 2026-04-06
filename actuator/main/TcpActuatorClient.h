@@ -18,7 +18,7 @@ public:
     }
 
     bool connectAndRegister() {
-        _client.stop();           // limpia sesión anterior antes de reintentar
+        _client.stop();
         _receiveBuffer = "";
 
         if (!_client.connect(SERVER_IP, SERVER_PORT)) {

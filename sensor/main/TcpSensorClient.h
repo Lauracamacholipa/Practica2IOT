@@ -21,8 +21,8 @@ public:
         Serial.printf("[TCP] Connecting to %s:%d\n", SERVER_IP, SERVER_PORT);
         bool connected = _client.connect(SERVER_IP, SERVER_PORT);
         if (connected) {
-            _sequenceNumber = 0;    // resetea el contador al reconectar
-            _receiveBuffer  = "";   // limpia el buffer
+            _sequenceNumber = 0;
+            _receiveBuffer  = "";
         }
         return connected;
     }
