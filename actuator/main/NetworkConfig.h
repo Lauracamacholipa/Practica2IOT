@@ -2,7 +2,7 @@
 
 static const char* WIFI_SSID       = "lrcmch's Galaxy A72";
 static const char* WIFI_PASSWORD   = "amoamisperros2345";
-static const char* SERVER_IP       = "10.41.223.161";
+static const char* SERVER_IP       = "10.26.211.161";
 static const int   SERVER_PORT     = 5000;
 
 static const int   SEND_INTERVAL_MS    = 500;
