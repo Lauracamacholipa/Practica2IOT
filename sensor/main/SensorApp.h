@@ -20,7 +20,10 @@ public:
     }
 
     void update() {
-        _ensureConnections();
+        if (!_ensureConnections()) {
+            delay(RECONNECT_DELAY_MS);
+            return;
+        }
 
         float distance = _sensor.readDistance();
 
@@ -31,7 +34,8 @@ public:
         }
 
         if (!_client.sendDistance(distance)) {
-            Serial.println("[TCP] Message lost — no ACK received");
+            Serial.println("[TCP] Message lost - no ACK received");
+            _client.disconnect();
         }
 
         delay(SEND_INTERVAL_MS);
@@ -41,8 +45,10 @@ private:
     UltrasonicSensor _sensor;
     TcpSensorClient  _client;
 
-    void _ensureConnections() {
+    bool _ensureConnections() {
         if (!_client.isWifiConnected()) {
+            Serial.println("[WiFi] Connection lost, reconnecting...");
+            _client.disconnect();
             _client.connectToWifi();
         }
 
@@ -53,7 +59,12 @@ private:
 
             if (!_client.connectToServer()) {
                 Serial.println("[TCP] Reconnection failed, retrying...");
+                return false;
             }
+
+            Serial.println("[TCP] Reconnected successfully");
         }
+
+        return true;
     }
 };
