@@ -1,38 +1,16 @@
-#include "NetworkConfig.h"
-#include "LedController.h"
-#include "TcpActuatorClient.h"
+#include "ActuatorApp.h"
 
 static const uint8_t RED_LED_PIN    = 5;
-static const uint8_t YELLOW_LED_PIN = 17; 
+static const uint8_t YELLOW_LED_PIN = 17;
 static const uint8_t GREEN_LED_PIN  = 16;
 
-LedController    leds(RED_LED_PIN, YELLOW_LED_PIN, GREEN_LED_PIN);
-TcpActuatorClient client;
+ActuatorApp app(RED_LED_PIN, YELLOW_LED_PIN, GREEN_LED_PIN);
 
 void setup() {
-    Serial.begin(115200);
-    leds.begin();
-    client.connectToWifi();
-    client.connectAndRegister();
+    app.begin();
 }
 
 void loop() {
-    if (!client.isWifiConnected()) {
-        client.connectToWifi();
-    }
-
-    if (!client.isServerConnected()) {
-        Serial.println("[TCP] Reconnecting to server...");
-        leds.turnAllOff();
-        delay(RECONNECT_DELAY_MS);
-        client.connectAndRegister();
-        return;
-    }
-
-    String command = client.readCommand();
-    if (command.length() > 0) {
-        leds.executeCommand(command);
-    }
-
+    app.update();
     delay(10);
 }
