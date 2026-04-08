@@ -1,3 +1,73 @@
+# Práctica 2 — Integración de Sensores y Actuadores en un Objeto Inteligente
+
+**Carrera:** Ingeniería de Sistemas
+
+**Docente**: Eduardo Enrique Marin Garcia
+
+**Asignatura:** SIS-234 - Internet de las Cosas
+
+**Integrantes**: 
+
+- Laura Camacho Lipa
+- Sergio Francisco Solis Luizaga
+- Cristhian Butron Perez
+
+---
+
+# **1. Requerimientos Funcionales y No Funcionales**
+
+## 1.1. Requerimientos funcionales
+
+**RF01:** El sistema deberá medir la distancia entre el sensor ultrasónico y un objeto ubicado frente a él dentro del rango de 2 cm a 150 cm.
+
+**RF02:** El sistema deberá transmitir la distancia medida desde el cliente sensor al servidor mediante comunicación TCP sobre red WiFi (IEEE 802.11),  incluyendo un número de secuencia único por mensaje..
+
+**RF03:** El servidor deberá clasificar la distancia recibida y enviar el comando correspondiente al actuador según los siguientes rangos:
+
+| **Rango** | **Acción** |
+| --- | --- |
+| 2 - 30  cm | LED Rojo |
+| 30 - 100 cm | LED Amarillo |
+| 100 - 150 cm | LED Verde |
+| >150 cm | Todos los LEDs apagados |
+
+**RF04:** El sistema deberá confirmar la recepción de cada mensaje del sensor mediante un acuse de recibo (ACK), evidenciado durante la ejecución del sistema.
+
+**RF05**: El sistema deberá reenviar un mensaje hasta un máximo de 3 intentos cuando no se reciba un ACK dentro de un tiempo definido por el sistema.
+
+## 1.2. Requerimientos no funcionales
+
+**RNF01:** El código fuente deberá incluir el uso de nombres descriptivos y consistentes para variables, funciones y constantes, así como una estructura modular que separe las responsabilidades en componentes independientes (sensor, comunicación TCP, servidor y actuador).
+
+**RNF02:** El sistema deberá reconectarse automáticamente  al servidor TCP en caso de pérdida de conexión, realizando intentos cada 2000 ms hasta restablecer la comunicación.
+
+**RNF03:** El sistema deberá ignorar mediciones fuera del rango de operación definido (menores a 2 cm o sin eco del sensor), registrando el evento en el monitor serial sin interrumpir el funcionamiento.
+
+**RNF04:** El sistema deberá mantener un funcionamiento continuo y estable durante la transmisión repetida de datos, sin interrupciones ni fallos críticos.
+
+# **2. Diseño del Sistema**
+
+### 2.1. Diagrama de bloques
+
+El proceso se inicia con el objeto, el cual constituye la fuente de la variable a medir, en este caso la distancia. El sensor ultrasónico HC-SR04 se encarga de transformar esta magnitud física en una señal interpretable, mediante la emisión y recepción de ondas ultrasónicas. Esta señal es procesada por el módulo ESP32 configurado como cliente sensor, el cual convierte la información en datos de distancia y los transmite al servidor.
+
+El servidor actúa como unidad central de procesamiento, donde se interpretan los datos recibidos y se generan las decisiones correspondientes. A partir de este análisis, se envían comandos al segundo módulo ESP32, configurado como cliente actuador.
+
+Finalmente, el ESP32 actuador traduce estos comandos en señales digitales de salida que controlan los indicadores LED.
+
+<img width="1018" height="60" alt="Diagrama de bloques drawio" src="https://github.com/user-attachments/assets/1d1b86de-de19-4797-b243-7e045124c4d9" />
+
+
+### 2.2. Diagrama de circuito
+
+El sistema está compuesto por dos módulos ESP32, organizados bajo una arquitectura distribuida donde ambos dispositivos operan como clientes conectados a un servidor central. Cada módulo cumple una función específica dentro del sistema: uno orientado a la adquisición de datos y otro a la ejecución de acciones.
+
+El módulo sensor integra un dispositivo ultrasónico HC-SR04, el cual permite medir distancias mediante el envío y recepción de ondas sonoras. Este módulo se encarga de capturar la información del entorno y transmitirla al servidor para su procesamiento. Por su parte, el módulo actuador está conformado por tres indicadores luminosos (LEDs) que representan distintos estados del sistema, los cuales son controlados por el ESP32 en función de las instrucciones recibidas.
+
+Ambos circuitos presentan una configuración coherente con los requerimientos funcionales del sistema para su propósito, con conexiones claras entre los componentes y el microcontrolador, así como una correcta referencia a tierra que garantiza estabilidad en la operación.
+
+<img width="1126" height="556" alt="Diagrama de Circuito - Practica 2 drawio" src="https://github.com/user-attachments/assets/df16e2ec-0f62-4f95-aca4-dc0610028efb" />
+
 # **4. Pruebas y Validaciones**
 
 ## 4.1. Objetivo de las pruebas
