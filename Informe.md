@@ -68,6 +68,51 @@ Ambos circuitos presentan una configuración coherente con los requerimientos fu
 
 <img width="1126" height="556" alt="Diagrama de Circuito - Practica 2 drawio" src="https://github.com/user-attachments/assets/df16e2ec-0f62-4f95-aca4-dc0610028efb" />
 
+## 2.5. Especificación del Protocolo de Aplicación
+
+Para la comunicación entre los componentes del sistema se definió un protocolo de aplicación sobre TCP, el cual permite el envío de datos del sensor, la confirmación de recepción y el control del actuador de manera confiable.
+
+### **2.5.1. Formato de mensajes**
+
+Los mensajes siguen una estructura de texto basada en pares clave-valor separados por `|`, lo que facilita su interpretación.
+
+**Estructura general:**
+
+CLAVE:VALOR | CLAVE:VALOR
+
+Ejemplo: 
+
+TYPE:SENSOR | SEQ:10 | DIST:28.5
+
+### **2.5.2. Tipos de mensajes**
+
+El protocolo contempla los siguientes tipos:
+
+- **TYPE:SENSOR:** Envío de datos de distancia desde el cliente sensor.
+- **ACK:** Confirmación de recepción por parte del servidor.
+- **CMD:** Comandos enviados al cliente actuador para controlar los LEDs.
+- **TYPE:ACTUATOR:** Identificación del cliente actuador al conectarse.
+
+### **2.5.3. Flujo de comunicación**
+
+El intercambio de información se realiza de la siguiente manera:
+
+1. El cliente sensor y el cliente actuador se conectan al servidor.
+2. El sensor envía la distancia medida junto con un número de secuencia.
+3. El servidor responde con un ACK para confirmar la recepción.
+4. El servidor procesa la distancia recibida.
+5. En función del valor, envía un comando al actuador.
+6. El actuador ejecuta la acción correspondiente (encender LED).
+
+### **2.5.4. Mecanismos de confiabilidad**
+
+Para garantizar la correcta transmisión de datos, se implementaron los siguientes mecanismos:
+
+- **Confirmación (ACK):** Cada mensaje enviado debe ser confirmado por el servidor.
+- **Reintentos:** Si no se recibe ACK, el mensaje se reenvía hasta un número limitado de intentos.
+- **Control de duplicados:** Se utiliza el número de secuencia (SEQ) para evitar procesar mensajes repetidos.
+- **Reconexión:** Los clientes intentan restablecer la conexión en caso de fallo.
+
 # **4. Pruebas y Validaciones**
 
 ## 4.1. Objetivo de las pruebas
