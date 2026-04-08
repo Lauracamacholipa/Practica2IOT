@@ -68,6 +68,30 @@ Ambos circuitos presentan una configuración coherente con los requerimientos fu
 
 <img width="1126" height="556" alt="Diagrama de Circuito - Practica 2 drawio" src="https://github.com/user-attachments/assets/df16e2ec-0f62-4f95-aca4-dc0610028efb" />
 
+### 2.3. Diagrama de arquitectura del sistema
+
+El sistema sigue una arquitectura cliente-servidor distribuida, donde el ESP32 sensor adquiere datos del entorno y los envía al servidor mediante comunicación TCP. El servidor procesa la información y genera comandos que son enviados al ESP32 actuador, el cual ejecuta la acción correspondiente mediante los indicadores LED.
+
+<img width="1440" height="890" alt="image (2)" src="https://github.com/user-attachments/assets/e355d178-707d-4abc-8f76-b144334cceb9" />
+
+### 2.4. Diagramas estructurales y de comportamiento
+
+El diagrama estructural muestra los componentes principales del sistema: el sensor ultrasónico HC-SR04 encargado de medir la distancia, el microcontrolador Arduino responsable del procesamiento de los datos y la clasificación del rango de distancia, y el sistema de LEDs que indica visualmente el resultado de la medición
+
+<img width="1440" height="1058" alt="image (3)" src="https://github.com/user-attachments/assets/e2ab26c3-f4af-4a81-9988-4b645f468110" />
+
+Diagrama de comportamiento del algoritmo de medición y clasificación de distancia, conexion con el servidor y conexion wifi, dividido en 3 bloques ESP (sensor), Servidor, ESP (actuador).
+
+<img width="1440" height="1736" alt="image (4)" src="https://github.com/user-attachments/assets/935f2125-33af-4cfe-a497-e30221badaa5" />
+<img width="1440" height="1524" alt="image (5)" src="https://github.com/user-attachments/assets/c5286635-0c4a-4768-a422-4a0f94089412" />
+<img width="1440" height="1356" alt="image (6)" src="https://github.com/user-attachments/assets/edf97d4a-8cf0-4f13-8745-5170a32e351d" />
+
+##Diagrama de secuencia
+
+<img width="731" height="661" alt="Diagramas_IOT_PRACTICA2 drawio (1)" src="https://github.com/user-attachments/assets/beb1e9de-db73-468a-b222-b323c749eff0" />
+
+
+
 ## 2.5. Especificación del Protocolo de Aplicación
 
 Para la comunicación entre los componentes del sistema se definió un protocolo de aplicación sobre TCP, el cual permite el envío de datos del sensor, la confirmación de recepción y el control del actuador de manera confiable.
