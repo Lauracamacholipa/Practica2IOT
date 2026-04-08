@@ -137,6 +137,104 @@ Para garantizar la correcta transmisión de datos, se implementaron los siguient
 - **Control de duplicados:** Se utiliza el número de secuencia (SEQ) para evitar procesar mensajes repetidos.
 - **Reconexión:** Los clientes intentan restablecer la conexión en caso de fallo.
 
+# **3. Implementación**
+
+El sistema fue implementado utilizando microcontroladores ESP32 para los nodos cliente (sensor y actuador) y una computadora como servidor central, empleando comunicación mediante sockets TCP sobre red WiFi (IEEE 802.11).
+
+El desarrollo se realizó en Arduino IDE (C++) para los dispositivos embebidos y Python para el servidor.
+
+## 3.1. Arquitectura de implementación
+
+El sistema se implementó siguiendo una arquitectura cliente-servidor distribuida, compuesta por tres módulos principales:
+
+- Cliente Sensor (ESP32): mide la distancia y envía datos.
+- Servidor TCP (Python): procesa la información y genera comandos.
+- Cliente Actuador (ESP32): ejecuta acciones mediante LEDs.
+
+Cada componente se comunica mediante el protocolo TCP, permitiendo una comunicación confiable entre los componentes.
+
+## 3.2 Implementación del cliente sensor
+
+El cliente sensor fue desarrollado sobre un ESP32 utilizando programación en C++. Su funcionalidad principal es medir la distancia mediante el sensor ultrasónico y transmitir dicha información al servidor.
+
+El diseño modular del cliente sensor está compuesto por:
+
+- **Clase `UltrasonicSensor`**: Responsable de generar el pulso ultrasónico, medir el tiempo de retorno del eco y calcular la distancia en centímetros.
+- **Clase `TcpSensorClient`**: Encargada de la conexión a la red WiFi, establecimiento de la conexión TCP con el servidor y envío de datos.
+
+El proceso de envío de datos incluye:
+
+- Construcción del mensaje con formato: TYPE:SENSOR | SEQ:n | DIST:x.x
+- Asignación de un número de secuencia (SEQ) incremental.
+- Espera de confirmación (ACK) por parte del servidor.
+- Reintento de envío hasta un máximo de 3 veces en caso de no recibir respuesta.
+
+## 3.3 Implementación del servidor TCP
+
+El servidor fue implementado en Python utilizando la librería estándar `socket`, permitiendo la gestión de múltiples conexiones mediante hilos (`threading`).
+
+Las principales funcionalidades del servidor son:
+
+- Recepción de conexiones de clientes sensor y actuador.
+- Identificación del tipo de cliente mediante el campo `TYPE`.
+- Procesamiento de mensajes recibidos.
+- Envío de confirmaciones (ACK) al cliente sensor.
+- Ejecución del algoritmo de control.
+- Envío de comandos al cliente actuador.
+
+El servidor implementa un mecanismo de control de duplicados utilizando números de secuencia (SEQ), evitando procesar mensajes repetidos.
+
+El algoritmo de control se define en función de la distancia recibida:
+
+- Distancia < 30 cm → `CMD:RED`
+- 30 cm ≤ Distancia < 100 cm → `CMD:YELLOW`
+- 100 cm ≤ Distancia ≤ 150 cm → `CMD:GREEN`
+- Distancia > 150 cm → `CMD:OFF`
+
+## 3.4 Implementación del cliente actuador
+
+El cliente actuador fue implementado en un ESP32, encargado de recibir comandos del servidor y controlar los dispositivos de salida.
+
+Su estructura modular incluye:
+
+- Clase LedController: Responsable del control de los LEDs, permitiendo su activación según el comando recibido.
+- Clase TcpActuatorClient: Encargada de la conexión WiFi, conexión al servidor y recepción de comandos.
+
+El cliente actuador realiza un proceso de registro inicial enviando el mensaje: TYPE:ACTUATOR
+
+Una vez registrado, permanece en espera de comandos del servidor, los cuales son interpretados y ejecutados en tiempo real.
+
+## **3.5 Manejo de comunicación y confiabilidad**
+
+Para mejorar la confiabilidad del sistema, se implementaron los siguientes mecanismos:
+
+- **Confirmación de mensajes (ACK):** Cada mensaje enviado por el cliente sensor es confirmado por el servidor.
+- **Reintentos de envío:** En caso de no recibir confirmación, el mensaje es reenviado hasta un máximo de 3 intentos.
+- **Control de duplicados:** Se emplea un identificador de secuencia (SEQ) para evitar el procesamiento repetido de mensajes.
+- **Reconexión automática:** Tanto el cliente sensor como el actuador intentan restablecer la conexión en caso de pérdida de red o desconexión del servidor.
+
+## **3.6 Organización del código**
+
+El proyecto se encuentra organizado en tres módulos principales:
+
+```
+sensor/
+ ├── main.ino
+ ├── UltrasonicSensor.h
+ ├── TcpSensorClient.h
+ ├── NetworkConfig.h
+
+actuador/
+ ├── main.ino
+ ├── LedController.h
+ ├── TcpActuatorClient.h
+ ├── NetworkConfig.h
+
+server.py
+```
+
+Esta estructura permite una clara separación de responsabilidades y facilita el mantenimiento y escalabilidad del sistema.
+
 # **4. Pruebas y Validaciones**
 
 ## 4.1. Objetivo de las pruebas
