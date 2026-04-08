@@ -23,6 +23,7 @@ public:
         if (connected) {
             _sequenceNumber = 0;
             _receiveBuffer  = "";
+            _flushReceiveBuffer();
         }
         return connected;
     }
@@ -90,5 +91,17 @@ private:
             delay(10);
         }
         return false;
+    }
+    
+    void _flushReceiveBuffer() {
+        unsigned long start = millis();
+        while (millis() - start < 200) {
+            while (_client.available()) {
+                _client.read();
+            }
+            delay(10);
+        }
+        _receiveBuffer = "";
+        Serial.println("[TCP] Receive buffer flushed");
     }
 };
