@@ -47,7 +47,7 @@
 
 # **2. Diseño del Sistema**
 
-### 2.1. Diagrama de bloques
+## 2.1. Diagrama de bloques
 
 El proceso se inicia con el objeto, el cual constituye la fuente de la variable a medir, en este caso la distancia. El sensor ultrasónico HC-SR04 se encarga de transformar esta magnitud física en una señal interpretable, mediante la emisión y recepción de ondas ultrasónicas. Esta señal es procesada por el módulo ESP32 configurado como cliente sensor, el cual convierte la información en datos de distancia y los transmite al servidor.
 
@@ -58,7 +58,7 @@ Finalmente, el ESP32 actuador traduce estos comandos en señales digitales de sa
 <img width="1018" height="60" alt="Diagrama de bloques drawio" src="https://github.com/user-attachments/assets/1d1b86de-de19-4797-b243-7e045124c4d9" />
 
 
-### 2.2. Diagrama de circuito
+## 2.2. Diagrama de circuito
 
 El sistema está compuesto por dos módulos ESP32, organizados bajo una arquitectura distribuida donde ambos dispositivos operan como clientes conectados a un servidor central. Cada módulo cumple una función específica dentro del sistema: uno orientado a la adquisición de datos y otro a la ejecución de acciones.
 
@@ -68,13 +68,13 @@ Ambos circuitos presentan una configuración coherente con los requerimientos fu
 
 <img width="1126" height="556" alt="Diagrama de Circuito - Practica 2 drawio" src="https://github.com/user-attachments/assets/df16e2ec-0f62-4f95-aca4-dc0610028efb" />
 
-### 2.3. Diagrama de arquitectura del sistema
+## 2.3. Diagrama de arquitectura del sistema
 
 El sistema sigue una arquitectura cliente-servidor distribuida, donde el ESP32 sensor adquiere datos del entorno y los envía al servidor mediante comunicación TCP. El servidor procesa la información y genera comandos que son enviados al ESP32 actuador, el cual ejecuta la acción correspondiente mediante los indicadores LED.
 
 <img width="1440" height="890" alt="image (2)" src="https://github.com/user-attachments/assets/e355d178-707d-4abc-8f76-b144334cceb9" />
 
-### 2.4. Diagramas estructurales y de comportamiento
+## 2.4 Diagramas estructurales y de comportamiento
 
 El diagrama estructural muestra los componentes principales del sistema: el sensor ultrasónico HC-SR04 encargado de medir la distancia, el microcontrolador Arduino responsable del procesamiento de los datos y la clasificación del rango de distancia, y el sistema de LEDs que indica visualmente el resultado de la medición
 
@@ -86,17 +86,17 @@ Diagrama de comportamiento del algoritmo de medición y clasificación de distan
 <img width="1440" height="1524" alt="image (5)" src="https://github.com/user-attachments/assets/c5286635-0c4a-4768-a422-4a0f94089412" />
 <img width="1440" height="1356" alt="image (6)" src="https://github.com/user-attachments/assets/edf97d4a-8cf0-4f13-8745-5170a32e351d" />
 
-## Diagrama de secuencia
+## 2.5 Diagrama de secuencia
 
 <img width="731" height="661" alt="Diagramas_IOT_PRACTICA2 drawio (1)" src="https://github.com/user-attachments/assets/beb1e9de-db73-468a-b222-b323c749eff0" />
 
 
 
-## 2.5. Especificación del Protocolo de Aplicación
+## 2.6 Especificación del Protocolo de Aplicación
 
 Para la comunicación entre los componentes del sistema se definió un protocolo de aplicación sobre TCP, el cual permite el envío de datos del sensor, la confirmación de recepción y el control del actuador de manera confiable.
 
-### **2.5.1. Formato de mensajes**
+### **2.6.1. Formato de mensajes**
 
 Los mensajes siguen una estructura de texto basada en pares clave-valor separados por `|`, lo que facilita su interpretación.
 
@@ -108,7 +108,7 @@ Ejemplo:
 
 TYPE:SENSOR | SEQ:10 | DIST:28.5
 
-### **2.5.2. Tipos de mensajes**
+### **2.6.2. Tipos de mensajes**
 
 El protocolo contempla los siguientes tipos:
 
@@ -117,7 +117,7 @@ El protocolo contempla los siguientes tipos:
 - **CMD:** Comandos enviados al cliente actuador para controlar los LEDs.
 - **TYPE:ACTUATOR:** Identificación del cliente actuador al conectarse.
 
-### **2.5.3. Flujo de comunicación**
+### **2.6.3. Flujo de comunicación**
 
 El intercambio de información se realiza de la siguiente manera:
 
@@ -128,7 +128,7 @@ El intercambio de información se realiza de la siguiente manera:
 5. En función del valor, envía un comando al actuador.
 6. El actuador ejecuta la acción correspondiente (encender LED).
 
-### **2.5.4. Mecanismos de confiabilidad**
+### **2.6.4. Mecanismos de confiabilidad**
 
 Para garantizar la correcta transmisión de datos, se implementaron los siguientes mecanismos:
 
@@ -143,7 +143,18 @@ El sistema fue implementado utilizando microcontroladores ESP32 para los nodos c
 
 El desarrollo se realizó en Arduino IDE (C++) para los dispositivos embebidos y Python para el servidor.
 
-## 3.1. Arquitectura de implementación
+## 3.1 Diagrama de clases
+
+La clase ActuatorApp actúa como componente orquestador, encargándose de la inicialización del sistema y de la ejecución del ciclo principal mediante los métodos begin() y update(). Esta clase mantiene relaciones de composición con LedController y TcpActuatorClient, lo que refleja que depende directamente de ambos para su funcionamiento. Por un lado, LedController encapsula la lógica de control de hardware, gestionando los pines de los LEDs y proporcionando métodos específicos para la ejecución de comandos (executeCommand) y control individual de estados. Por otro lado, TcpActuatorClient abstrae la comunicación de red, incluyendo la conexión WiFi, el registro en el servidor y la recepción de comandos mediante un buffer interno. Esta separación permite desacoplar la lógica de comunicación de la lógica de control físico, facilitando el mantenimiento y la extensibilidad del sistema.
+
+<img width="635" height="273" alt="Actuador-Diagrama drawio" src="https://github.com/user-attachments/assets/df4c3136-95d9-40d3-8b0c-c7a873b02eea" />
+
+La clase ActuatorApp actúa como componente orquestador, encargándose de la inicialización del sistema y de la ejecución del ciclo principal mediante los métodos begin() y update(). Esta clase mantiene relaciones de composición con LedController y TcpActuatorClient, lo que refleja que depende directamente de ambos para su funcionamiento. Por un lado, LedController encapsula la lógica de control de hardware, gestionando los pines de los LEDs y proporcionando métodos específicos para la ejecución de comandos (executeCommand) y control individual de estados. Por otro lado, TcpActuatorClient abstrae la comunicación de red, incluyendo la conexión WiFi, el registro en el servidor y la recepción de comandos mediante un buffer interno. Esta separación permite desacoplar la lógica de comunicación de la lógica de control físico, facilitando el mantenimiento y la extensibilidad del sistema.
+
+<img width="1171" height="350" alt="Sensor-Diagrama drawio" src="https://github.com/user-attachments/assets/f1b0ec5e-f51a-4bf6-8060-f1d787543f45" />
+
+
+## 3.2 Arquitectura de implementación
 
 El sistema se implementó siguiendo una arquitectura cliente-servidor distribuida, compuesta por tres módulos principales:
 
@@ -153,7 +164,7 @@ El sistema se implementó siguiendo una arquitectura cliente-servidor distribuid
 
 Cada componente se comunica mediante el protocolo TCP, permitiendo una comunicación confiable entre los componentes.
 
-## 3.2 Implementación del cliente sensor
+## 3.3 Implementación del cliente sensor
 
 El cliente sensor fue desarrollado sobre un ESP32 utilizando programación en C++. Su funcionalidad principal es medir la distancia mediante el sensor ultrasónico y transmitir dicha información al servidor.
 
@@ -169,7 +180,7 @@ El proceso de envío de datos incluye:
 - Espera de confirmación (ACK) por parte del servidor.
 - Reintento de envío hasta un máximo de 3 veces en caso de no recibir respuesta.
 
-## 3.3 Implementación del servidor TCP
+## 3.4 Implementación del servidor TCP
 
 El servidor fue implementado en Python utilizando la librería estándar `socket`, permitiendo la gestión de múltiples conexiones mediante hilos (`threading`).
 
@@ -191,7 +202,7 @@ El algoritmo de control se define en función de la distancia recibida:
 - 100 cm ≤ Distancia ≤ 150 cm → `CMD:GREEN`
 - Distancia > 150 cm → `CMD:OFF`
 
-## 3.4 Implementación del cliente actuador
+## 3.5 Implementación del cliente actuador
 
 El cliente actuador fue implementado en un ESP32, encargado de recibir comandos del servidor y controlar los dispositivos de salida.
 
@@ -204,7 +215,7 @@ El cliente actuador realiza un proceso de registro inicial enviando el mensaje: 
 
 Una vez registrado, permanece en espera de comandos del servidor, los cuales son interpretados y ejecutados en tiempo real.
 
-## **3.5 Manejo de comunicación y confiabilidad**
+## **3.6 Manejo de comunicación y confiabilidad**
 
 Para mejorar la confiabilidad del sistema, se implementaron los siguientes mecanismos:
 
@@ -213,7 +224,7 @@ Para mejorar la confiabilidad del sistema, se implementaron los siguientes mecan
 - **Control de duplicados:** Se emplea un identificador de secuencia (SEQ) para evitar el procesamiento repetido de mensajes.
 - **Reconexión automática:** Tanto el cliente sensor como el actuador intentan restablecer la conexión en caso de pérdida de red o desconexión del servidor.
 
-## **3.6 Organización del código**
+## **3.7 Organización del código**
 
 El proyecto se encuentra organizado en tres módulos principales:
 
