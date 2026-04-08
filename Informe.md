@@ -86,7 +86,7 @@ Diagrama de comportamiento del algoritmo de medición y clasificación de distan
 <img width="1440" height="1524" alt="image (5)" src="https://github.com/user-attachments/assets/c5286635-0c4a-4768-a422-4a0f94089412" />
 <img width="1440" height="1356" alt="image (6)" src="https://github.com/user-attachments/assets/edf97d4a-8cf0-4f13-8745-5170a32e351d" />
 
-##Diagrama de secuencia
+## Diagrama de secuencia
 
 <img width="731" height="661" alt="Diagramas_IOT_PRACTICA2 drawio (1)" src="https://github.com/user-attachments/assets/beb1e9de-db73-468a-b222-b323c749eff0" />
 
