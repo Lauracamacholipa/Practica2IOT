@@ -117,13 +117,14 @@ Para garantizar la correcta transmisión de datos, se implementaron los siguient
 
 ## 4.1. Objetivo de las pruebas
 
-El objetivo de las pruebas es verificar que el sistema desarrollado cumple con los requerimientos funcionales definidos, evaluando:
+El objetivo de las pruebas es verificar que el sistema cumple con los requerimientos funcionales y no funcionales definidos, evaluando los siguientes aspectos:
 
-- la precisión de medición del sensor ultrasónico
-- la correcta transimisión de datos mediante TCP con control de secuencia
-- la correcta clasificación de los rangos de distancia y activación del actuador
-- el funcionamiento del mecanismo de confirmación y control de mensajes
-- la estabilidad y comportamiento del sistema ante condiciones de operación
+- Precisión de medición del sensor ultrasónico.
+- Correcta transmisión de datos mediante protocolo TCP.
+- Funcionamiento del control de secuencia en los mensajes.
+- Correcta clasificación de distancias y activación del actuador.
+- Funcionamiento del mecanismo de confirmación (ACK) y reintentos.
+- Estabilidad del sistema ante condiciones normales y anómalas.
 
 ## 4.2. Metodología de pruebas
 
@@ -173,26 +174,46 @@ Durante las pruebas se obtuvieron las siguiente mediciones y validaciones experi
 
 <img width="572" height="667" alt="image" src="https://github.com/user-attachments/assets/7fdf2f26-f7d5-4578-ae62-1ff7c9ffb258" />
 
+Se obtuvo un error promedio de 1.46 cm (2.23%).
+El error se mantiene bajo en todos los rangos, con una ligera tendencia al incremento en distancias mayores.
+
+La clasificación de LEDs fue correcta en el 100% de los casos.
+
 ### 4.4.2 Envío TCP con secuencia
 
 <img width="725" height="279" alt="image" src="https://github.com/user-attachments/assets/0d6d633f-1045-4640-816d-af9dce4f19bd" />
 
+Los valores de secuencia (SEQ) se incrementaron de forma continua y ordenada.
+No se detectaron pérdidas ni duplicaciones en condiciones normales.
+
 ### 4.4.3 Clasificación de LEDs y comandos
 
 <img width="865" height="215" alt="image" src="https://github.com/user-attachments/assets/c259ba11-530b-487a-b53f-05c72d6d01d0" />
+
+Los comandos generados corresponden correctamente a cada rango de distancia.
+La ejecución en el actuador coincidió con el comando enviado en todos los casos.
 
 ### 4.4.4 Reintentos de conexión con ACK y tiempo de reconexión automática
 
 <img width="865" height="448" alt="image" src="https://github.com/user-attachments/assets/90ade78d-1039-4571-be32-3fab048ad4f6" />
 <img width="733" height="148" alt="image" src="https://github.com/user-attachments/assets/2eeaa5a9-3243-4fbd-a94f-ddd40c50d3d3" />
 
+La mayoría de los mensajes fueron confirmados en el primer intento.
+Se observaron casos con múltiples reintentos y algunos mensajes no entregados.
+
+El tiempo de reconexión se mantuvo entre 3 y 4 segundos, cumpliendo el comportamiento esperado.
+
 ### 4.4.5 Manejo de valores inválidos
 
 <img width="730" height="179" alt="image" src="https://github.com/user-attachments/assets/ba5e9918-74f2-401b-9358-efa5d1d57b8e" />
 
+Las condiciones inválidas fueron detectadas correctamente y registradas sin afectar la ejecución del sistema.
+
 ### 4.4.6 Estabilidad del sistema
 
 <img width="728" height="211" alt="image" src="https://github.com/user-attachments/assets/0e077601-8afd-44aa-b0ed-ad4b06ae4480" />
+
+El sistema se mantuvo operativo durante toda la prueba, con un único evento de reintento y sin fallos críticos.
 
 # **5. Resultados**
 
